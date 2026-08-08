@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, HTTPException
 
@@ -103,7 +103,7 @@ def save_analysis(data: AnalysisSync):
 
     payload.setdefault(
         "synced_at",
-        datetime.utcnow().isoformat()
+        datetime.now(timezone.utc).isoformat()
     )
 
     firebase_service.save_analysis(

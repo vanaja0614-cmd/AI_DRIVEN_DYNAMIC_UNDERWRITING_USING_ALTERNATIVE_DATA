@@ -51,16 +51,16 @@ class AssistantService:
 
         consent_data = {
             "employmentSignals": bool(
-                consent and consent.behavioral_data_consent
+                consent and consent.employment_signals_consent
             ),
             "professionalPresence": bool(
-                consent and consent.behavioral_data_consent
+                consent and consent.professional_presence_consent
             ),
             "digitalSignals": bool(
-                consent and consent.digital_data_consent
+                consent and consent.digital_signals_consent
             ),
             "publicData": bool(
-                consent and consent.transaction_data_consent
+                consent and consent.public_data_consent
             ),
         }
 

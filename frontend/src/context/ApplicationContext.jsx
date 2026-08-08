@@ -4,6 +4,8 @@ const ApplicationContext = createContext(null);
 
 const initialState = {
   // Step 1: Application Form
+  name: "",
+  email: "",
   income: "",
   jobTitle: "",
   yearsEmployed: "",

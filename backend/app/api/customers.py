@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
@@ -17,8 +18,17 @@ def create_customer(
     data: CustomerCreate,
     db: Session = Depends(get_db),
 ):
-
-    return CustomerService.create(db, data)
+    try:
+        return CustomerService.create(db, data)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail=(
+                "An account already exists for this email. "
+                "Please use a different email address."
+            ),
+        )
 
 
 @router.get("/{customer_id}")

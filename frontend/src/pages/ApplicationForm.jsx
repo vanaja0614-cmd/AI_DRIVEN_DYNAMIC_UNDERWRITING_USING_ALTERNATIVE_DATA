@@ -4,6 +4,8 @@ import { useApplication } from "../context/ApplicationContext";
 export default function ApplicationForm() {
   const navigate = useNavigate();
   const {
+    name,
+    email,
     income,
     jobTitle,
     yearsEmployed,
@@ -114,6 +116,36 @@ export default function ApplicationForm() {
 
           <form className="flex-grow flex flex-col gap-gutter" onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+              <div className="space-y-sm">
+                <label className="font-label-md text-label-md text-on-surface flex items-center gap-2" htmlFor="name">
+                  Full Name
+                </label>
+                <input
+                  className="input-base font-body-md text-body-md"
+                  id="name"
+                  placeholder="e.g. Jane Doe"
+                  required
+                  type="text"
+                  value={name}
+                  onChange={(e) => updateApplication({ name: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-sm">
+                <label className="font-label-md text-label-md text-on-surface flex items-center gap-2" htmlFor="email">
+                  Email
+                </label>
+                <input
+                  className="input-base font-body-md text-body-md"
+                  id="email"
+                  placeholder="you@example.com"
+                  required
+                  type="email"
+                  value={email}
+                  onChange={(e) => updateApplication({ email: e.target.value })}
+                />
+              </div>
+
               <div className="space-y-sm">
                 <label className="font-label-md text-label-md text-on-surface flex items-center gap-2" htmlFor="income">
                   Annual Income

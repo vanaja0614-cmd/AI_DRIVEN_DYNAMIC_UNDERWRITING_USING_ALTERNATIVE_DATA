@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import SideNav from "../components/layout/SideNav";
+import AppLayout from "../components/layout/AppLayout";
+import PageHeader from "../components/ui/PageHeader";
+import Button from "../components/ui/Button";
+import ErrorBanner from "../components/ui/ErrorBanner";
 import { useApplication } from "../context/ApplicationContext";
 import { useRunAnalysis } from "../hooks/useRunAnalysis";
 import { syncAnalysis } from "../api/firebase";
@@ -162,6 +165,8 @@ export default function ResultsDashboard() {
     yearsEmployed,
     education,
     bureauScore,
+    loanAmount,
+    loanTerm,
     riskResult,
     fraudResult,
     explanationResult,
@@ -243,60 +248,44 @@ export default function ResultsDashboard() {
   const inputCards = [
     { label: "Annual Income", value: `$${Number(income || 0).toLocaleString()}` },
     { label: "Bureau Score", value: bureauScore || "—" },
-    { label: "Loan Amount", value: `$${Number(income || 0).toLocaleString()}` },
-    { label: "Loan Term", value: "12 months" },
+    { label: "Loan Amount", value: `$${Number(loanAmount || 0).toLocaleString()}` },
+    { label: "Loan Term", value: loanTerm ? `${loanTerm} months` : "—" },
     { label: "Employment", value: `${yearsEmployed || 0} yrs` },
     { label: "Education", value: education || "—" },
   ];
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-background text-on-surface">
-      <SideNav />
-
-      <main className="flex-1 flex flex-col md:ml-64 relative">
-        <div className="px-margin-desktop py-lg flex flex-wrap items-end justify-between gap-md border-b border-surface-container-high bg-surface sticky top-0 z-10 backdrop-blur-sm bg-opacity-90">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-2 h-2 rounded-full bg-primary"></span>
-              <span className="font-label-sm text-label-sm text-primary tracking-widest uppercase">
-                Step 3 of 3: Complete
-              </span>
-            </div>
-            <h2 className="font-display-lg text-display-lg text-on-surface">
-              Analysis Overview
-            </h2>
-            <p className="font-label-sm text-label-sm text-on-surface-variant mt-1">
-              Run #{analysisCount || 1} · last updated {formatTime(lastAnalysisAt)}
-            </p>
+    <AppLayout>
+      <PageHeader
+        kicker="Step 3 of 3: Complete"
+        title="Analysis Overview"
+        subtitle={`Run #${analysisCount || 1} · last updated ${formatTime(lastAnalysisAt)}`}
+        actions={
+          <>
             {syncedAt && (
-              <p className="font-label-sm text-label-sm text-primary mt-1 flex items-center gap-xs">
-                <span className="material-symbols-outlined text-sm">cloud_done</span>
+              <span className="font-label-sm text-label-sm text-primary flex items-center gap-xs">
+                <span className="material-symbols-outlined text-sm">
+                  cloud_done
+                </span>
                 Synced to Firebase at {formatTime(syncedAt)}
-              </p>
-            )}
-          </div>
-          <div className="flex items-center gap-sm">
-            <button
-              onClick={handleRefresh}
-              disabled={loading}
-              className="font-label-md text-label-md bg-primary text-on-primary-container px-lg py-sm rounded-lg font-semibold hover:bg-primary-fixed transition-colors flex items-center gap-xs shadow-[0_4px_14px_rgba(107,216,203,0.3)] disabled:opacity-60"
-            >
-              <span
-                className={`material-symbols-outlined text-sm ${
-                  loading ? "animate-spin" : ""
-                }`}
-                style={loading ? { fontVariationSettings: "'FILL' 1" } : undefined}
-              >
-                {loading ? "progress_activity" : "refresh"}
               </span>
+            )}
+            <Button
+              onClick={handleRefresh}
+              loading={loading}
+              icon="refresh"
+            >
               {loading ? "Analyzing..." : "New Analysis"}
-            </button>
-            <button className="font-label-md text-label-md text-on-surface-variant hover:text-on-surface px-md py-sm rounded-lg flex items-center gap-xs border border-outline-variant/30 hover:border-outline-variant transition-colors">
-              <span className="material-symbols-outlined text-sm">download</span>
+            </Button>
+            <Button
+              variant="secondary"
+              icon="download"
+            >
               Download Report
-            </button>
-          </div>
-        </div>
+            </Button>
+          </>
+        }
+      />
 
         <div className="px-margin-desktop py-md pb-xl">
           {loading && (
@@ -306,15 +295,14 @@ export default function ResultsDashboard() {
           )}
 
           {error && !loading && (
-            <div className="bg-surface-container border border-error/30 rounded-2xl p-md mb-md">
-              <p className="font-body-md text-body-md text-error mb-sm">{error}</p>
+            <ErrorBanner message={error}>
               <Link
                 to="/application"
                 className="text-primary hover:underline font-label-md text-label-md"
               >
                 Start a new application
               </Link>
-            </div>
+            </ErrorBanner>
           )}
 
           {!loading && !error && riskResult && (
@@ -586,7 +574,6 @@ export default function ResultsDashboard() {
             </>
           )}
         </div>
-      </main>
-    </div>
+    </AppLayout>
   );
 }

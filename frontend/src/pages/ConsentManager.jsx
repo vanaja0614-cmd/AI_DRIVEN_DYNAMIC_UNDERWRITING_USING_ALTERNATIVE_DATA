@@ -39,11 +39,15 @@ export default function ConsentManager() {
   const {
     consent,
     updateConsent,
+    name,
+    email,
     income,
     jobTitle,
     yearsEmployed,
     education,
     bureauScore,
+    loanAmount,
+    loanTerm,
     setState,
   } = useApplication();
   const [submitting, setSubmitting] = useState(false);
@@ -56,11 +60,10 @@ export default function ConsentManager() {
     setError(null);
     try {
       // Create a customer record (also mirrored to Firebase 'users' on the
-      // backend). If you want to collect a real name/email, add fields to
-      // the Application Form and pass them through here.
+      // backend) using the name/email collected on the Application Form.
       const customer = await createCustomer({
-        name: jobTitle || "Applicant",
-        email: `${(jobTitle || "applicant").toLowerCase().replace(/\s+/g, ".")}@example.com`,
+        name: name || jobTitle || "Applicant",
+        email: email || `${(jobTitle || "applicant").toLowerCase().replace(/\s+/g, ".")}@example.com`,
         income: Number(income) || 0,
         credit_score: Number(bureauScore) || 0,
       });
@@ -68,8 +71,8 @@ export default function ConsentManager() {
 
       const application = await createApplication({
         customer_id: customerId,
-        loan_amount: Number(income) || 0, // TODO: add a real loan_amount field to the form; using income as a stand-in
-        loan_term: 12, // TODO: add a real loan_term field to the form
+        loan_amount: Number(loanAmount) || Number(income) || 0,
+        loan_term: Number(loanTerm) || 12,
         employment_years: Number(yearsEmployed) || 0,
       });
 

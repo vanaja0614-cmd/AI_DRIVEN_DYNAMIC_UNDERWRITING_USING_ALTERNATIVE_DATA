@@ -13,3 +13,9 @@ router = APIRouter(
 def health():
 
     return MonitoringService.system_status()
+
+
+@router.get("/ready")
+def readiness():
+
+    return MonitoringService.readiness()

@@ -3,6 +3,11 @@ __pycache__/
 *.pyc
 *.pkl
 trustflow.db
+*.sqlite
+*.sqlite3
 *.log
 .pytest_cache/
+.mypy_cache/
+.env
 ml/data/*.csv
+*.ipynb_checkpoints
